@@ -1,9 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Password Manager</title>
 </head>
 <body>
 	<h1>Password Manager</h1>
+	<h2>Register:</h2>
+	<form method="POST">
+		{% csrf_token %}
+		{{ user_create }}
+		<input type="button" onclick="p(true);" value="post">
+		<!-- <input type="submit"> -->
+	</form>
+	<h2>Login:</h2>
+	<form method="POST">
+		{% csrf_token %}
+		{{ user_create }}
+		<input type="button" onclick="p(false);" value="post">
+		<!-- <input type="submit"> -->
+	</form>
+
+
+	<script type="text/javascript">
+		function p(newAccount){
+		    // Open request
+		    const request = new XMLHttpRequest();
+		    request.open('POST', '/')
+		    // Include csrf token in header so Django will accept the request
+		    const token = document.cookie.split("csrftoken=")[1]
+		    request.setRequestHeader("X-CSRFToken", token)
+		    //get data from form
+		    mail = document.getElementsByName("Email")[0].value
+		    password = document.getElementsByName("Password")[0].value
+		    console.log(password)
+		    console.log(mail)
+		    //hash data
+		    				//vault key
+		    				//hashed password for django
+    		
+    		//save data from form
+		    const data = new FormData();
+		    data.append('new', newAccount)
+    		data.append('Email', mail);
+    		data.append('Password', password);
+		    // Send request
+		    request.send( data )
+		}
+		
+	</script>
 </body>
 </html>
