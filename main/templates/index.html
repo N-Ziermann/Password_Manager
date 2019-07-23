@@ -2,6 +2,12 @@
 <html>
 <head>
 	<title>Password Manager</title>
+
+	{% load static %}
+	<script src="{% static '/main/pbkdf2.js' %}"></script>	
+
+
+
 </head>
 <body>
 	<h1>Password Manager</h1>
@@ -21,7 +27,7 @@
 	</form>
 
 
-	<script type="text/javascript">
+	<script type="text/javascript">		//USE ONSUBMIT INSTEAD
 		function p(newAccount){
 		    // Open request
 		    const request = new XMLHttpRequest();
@@ -34,15 +40,14 @@
 		    password = document.getElementsByName("Password")[0].value
 		    console.log(password)
 		    console.log(mail)
-		    //hash data
-		    				//vault key
-		    				//hashed password for django
-    		
+		    //hash (dbKey = Login; vaultKey = en-/decrypt vault)
+		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString()
+		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 2500}).toString()
     		//save data from form
 		    const data = new FormData();
 		    data.append('new', newAccount)
     		data.append('Email', mail);
-    		data.append('Password', password);
+    		data.append('Password', dbKey);
 		    // Send request
 		    request.send( data )
 		}
