@@ -5,6 +5,7 @@
 
 	{% load static %}
 	<script src="{% static '/main/pbkdf2.js' %}"></script>	
+	<script src="{% static '/main/aes.js' %}"></script>	
 
 
 
@@ -36,26 +37,55 @@
 			else{
 				form = document.getElementById("login");
 			}
+		    
 		    // Open request
 		    const request = new XMLHttpRequest();
 		    request.open('POST', '/');
+		    
 		    // Include csrf token in header so Django will accept the request
 		    const token = document.cookie.split("csrftoken=")[1];
 		    request.setRequestHeader("X-CSRFToken", token);
+		    
 		    //get data from form
 		    mail = form.children.Email.value;
 		    password = form.children.Password.value;
+		   
 		    //hash (dbKey = Login; vaultKey = en-/decrypt vault)
 		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString();
 		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 2500}).toString();
+    		
     		//save data from form
 		    const data = new FormData();
 		    data.append('new', newAccount)
     		data.append('Email', mail);
     		data.append('Password', dbKey);
+    		
+    		if (newAccount){	//if the account is new then a vault must be created and encrypted aswell
+    			//create vault
+    			vault = JSON.stringify({})
+    			//encrypt vault and turn into string
+    			vault = CryptoJS.AES.encrypt(vault, vaultKey).toString()
+    			//save vault
+    			data.append('Vault', vault)
+    		}
+		    
 		    // Send request
 		    request.send( data );
 		}
+
+		/*
+		turn data into vault: 		vault = JSON.stringify({})
+
+		encrypt vault: 				vault = CryptoJS.AES.encrypt(vault, vaultKey)
+
+		turn into string: 			vault = vault.toString()
+
+		decrypt vault: 				vault = CryptoJS.AES.decrypt(vault,vaultKey)
+
+		turn into parsable string: 	vault = vault.toString(CryptoJS.enc.Utf8)
+
+		turn into data: 			vault = JSON.parse(vault)
+		*/
 		
 	</script>
 </body>
