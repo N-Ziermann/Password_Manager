@@ -12,14 +12,14 @@
 <body>
 	<h1>Password Manager</h1>
 	<h2>Register:</h2>
-	<form method="POST">
+	<form method="POST" id="register">
 		{% csrf_token %}
 		{{ user_create }}
 		<input type="button" onclick="p(true);" value="post">
 		<!-- <input type="submit"> -->
 	</form>
 	<h2>Login:</h2>
-	<form method="POST">
+	<form method="POST" id="login">
 		{% csrf_token %}
 		{{ user_create }}
 		<input type="button" onclick="p(false);" value="post">
@@ -29,27 +29,32 @@
 
 	<script type="text/javascript">		//USE ONSUBMIT INSTEAD
 		function p(newAccount){
+			//select form from which data will be read
+			if (newAccount){
+				form = document.getElementById("register");
+			}
+			else{
+				form = document.getElementById("login");
+			}
 		    // Open request
 		    const request = new XMLHttpRequest();
-		    request.open('POST', '/')
+		    request.open('POST', '/');
 		    // Include csrf token in header so Django will accept the request
-		    const token = document.cookie.split("csrftoken=")[1]
-		    request.setRequestHeader("X-CSRFToken", token)
+		    const token = document.cookie.split("csrftoken=")[1];
+		    request.setRequestHeader("X-CSRFToken", token);
 		    //get data from form
-		    mail = document.getElementsByName("Email")[0].value
-		    password = document.getElementsByName("Password")[0].value
-		    console.log(password)
-		    console.log(mail)
+		    mail = form.children.Email.value;
+		    password = form.children.Password.value;
 		    //hash (dbKey = Login; vaultKey = en-/decrypt vault)
-		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString()
-		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 2500}).toString()
+		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString();
+		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 2500}).toString();
     		//save data from form
 		    const data = new FormData();
 		    data.append('new', newAccount)
     		data.append('Email', mail);
     		data.append('Password', dbKey);
 		    // Send request
-		    request.send( data )
+		    request.send( data );
 		}
 		
 	</script>
