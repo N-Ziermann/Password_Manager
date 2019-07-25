@@ -8,7 +8,9 @@ from base64 import b64encode
 import re
 # Create your views here.
 def homepage(request):
-	
+	print(request.COOKIES)
+	csrfToken = request.COOKIES['csrftoken']
+
 	if request.method == "POST":
 		print("*"*50)
 		email = request.POST["Email"]
@@ -32,15 +34,23 @@ def homepage(request):
 			hashedPassword = b64encode(hashedPasswordBytes).decode('utf-8')
 			print(hashedPassword)
 			# check if user already exists
-			if len(User.objects.raw('SELECT * FROM main_user WHERE mail="' + email + '";')) != 0:
-				if new:
+			print(len(User.objects.filter(mail=email)))
+			if len(User.objects.filter(mail=email)) != 0:
+				if new == "true":
 					print("User already exists.")
 				else:
 					print("Username right, testing login")
+					storedPassword = User.objects.filter(mail=email)[0].password
+					if storedPassword == password:
+						print("Password right, loging in")
+					else:
+						print("Password wrong!")
+
 			else:
-				if new:
+				if new == "true":
 					print("creating new user")
-					
+					newUser = User(mail=email, password=password, data=data)
+					newUser.save()
 				else:
 					print("user doesnt exist yet")
 		
@@ -49,14 +59,10 @@ def homepage(request):
 
 		
 		print("*"*50)
-
-
-		if False:
-			User.objects.raw('INSERT INTO main_user (mail, password, data) VALUES ()')
 		
 	return render(	request=request,
 					template_name="index.html",
-					context={"user_create":UserCreateForm})
+					context={"user_create":UserCreateForm, "csrfToken":csrfToken})
 
 def prf(p,s):
 	return HMAC.new(p,s,SHA512).digest()

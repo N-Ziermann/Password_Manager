@@ -43,8 +43,8 @@
 		    request.open('POST', '/');
 		    
 		    // Include csrf token in header so Django will accept the request
-		    const token = document.cookie.split("csrftoken=")[1];
-		    request.setRequestHeader("X-CSRFToken", token);
+
+		    request.setRequestHeader("X-CSRFToken", "{{csrfToken}}");
 		    
 		    //get data from form
 		    mail = form.children.Email.value;
