@@ -12,6 +12,8 @@ def homepage(request):
 	csrfToken = request.COOKIES['csrftoken']
 
 	if request.method == "POST":
+		response = HttpResponse()	#data that will be send back to the client
+
 		print("*"*50)
 		email = request.POST["Email"]
 		password = request.POST["Password"]
@@ -38,26 +40,32 @@ def homepage(request):
 			if len(User.objects.filter(mail=email)) != 0:
 				if new == "true":
 					print("User already exists.")
+					response.write("User already exists.")
 				else:
 					print("Username right, testing login")
 					storedPassword = User.objects.filter(mail=email)[0].password
 					if storedPassword == password:
 						print("Password right, loging in")
+						response.write(User.objects.filter(mail=email)[0].data)
 					else:
 						print("Password wrong!")
+						response.write("Password wrong!")
 
 			else:
 				if new == "true":
 					print("creating new user")
 					newUser = User(mail=email, password=password, data=data)
 					newUser.save()
+					response.write("User created!")
 				else:
 					print("user doesnt exist yet")
+					response.write("User doesnt exist yet!")
 		
 		else:
 			print("Email is invalid")
+			response.write("Email is invalid")
 
-		
+		return response
 		print("*"*50)
 		
 	return render(	request=request,
