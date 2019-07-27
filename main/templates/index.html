@@ -64,19 +64,29 @@
     		
     		if (newAccount){	//if the account is new then a vault must be created and encrypted aswell
     			//create vault
-    			vault = JSON.stringify({})
+    			vault = JSON.stringify({});
     			//encrypt vault and turn into string
-    			vault = CryptoJS.AES.encrypt(vault, vaultKey).toString()
+    			vault = CryptoJS.AES.encrypt(vault, vaultKey).toString();
     			//save vault
-    			data.append('Vault', vault)
+    			data.append('Vault', vault);
     		}
 		    
-		    // Send request
 		    request.send( data );
 
 		    request.onreadystatechange=(e)=>{
-		    	console.log(request.responseText)
-		    	document.getElementById("errorMessage").innerHTML = request.responseText
+		    	r = request.responseText;
+		    	console.log(r);
+		    	if (r.substring(0, 6) != "Vault:"){
+		    		document.getElementById("errorMessage").innerHTML = r;
+		    	}
+		    	else{	//if user logged in successfully and got his vault sent back
+		    		encrypted_vault = r.substring(6, r.length)
+		    		//turn vault back into object
+		    		vault_text = CryptoJS.AES.decrypt(encrypted_vault, vaultKey).toString(CryptoJS.enc.Utf8);
+		    		vault = JSON.parse(vault_text)
+
+		    		document.getElementById("errorMessage").innerHTML = vault_text;
+		    	}
 		    }
 		}
 

@@ -46,7 +46,7 @@ def homepage(request):
 					storedPassword = User.objects.filter(mail=email)[0].password
 					if storedPassword == password:
 						print("Password right, loging in")
-						response.write(User.objects.filter(mail=email)[0].data)
+						response.write("Vault:" + User.objects.filter(mail=email)[0].data)
 					else:
 						print("Password wrong!")
 						response.write("Password wrong!")
