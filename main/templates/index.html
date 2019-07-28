@@ -12,28 +12,42 @@
 </head>
 <body>
 	<h1>Password Manager</h1>
+
 	<h2>Register:</h2>
 	<form method="POST" id="register">
 		{% csrf_token %}
 		{{ user_create }}
-		<input type="button" onclick="p(true);" value="post">
-		<!-- <input type="submit"> -->
+		<input type="button" onclick="p('new');" value="post">
 	</form>
+
 	<h2>Login:</h2>
 	<form method="POST" id="login">
 		{% csrf_token %}
 		{{ user_create }}
-		<input type="button" onclick="p(false);" value="post">
-		<!-- <input type="submit"> -->
+		<input type="button" onclick="p('existing');" value="post">
 	</form>
 	
 	<b><h3 id="errorMessage" style="color: red;"></h3></b>
 
 
-	<script type="text/javascript">		//USE ONSUBMIT INSTEAD
-		function p(newAccount){
+	<script type="text/javascript">
+		function encrypt_and_send_vault(){
+			const request = new XMLHttpRequest();
+			request.open('POST', '/');
+			request.setRequestHeader("X-CSRFToken", "{{csrfToken}}");
+			const data = new FormData();
+		    data.append('type', "change")
+    		data.append('Email', mail);
+    		data.append('Password', dbKey);
+    		updated_vault = JSON.stringify(vault);
+    		updated_vault = CryptoJS.AES.encrypt(updated_vault, vaultKey).toString();
+    		data.append('Vault', updated_vault);
+    		request.send( data );
+		}
+
+		function p(type){
 			//select form from which data will be read
-			if (newAccount){
+			if (type == "new"){
 				form = document.getElementById("register");
 			}
 			else{
@@ -58,11 +72,11 @@
     		
     		//save data from form
 		    const data = new FormData();
-		    data.append('new', newAccount)
+		    data.append('type', type)
     		data.append('Email', mail);
     		data.append('Password', dbKey);
     		
-    		if (newAccount){	//if the account is new then a vault must be created and encrypted aswell
+    		if (type == "new"){	//if the account is new then a vault must be created and encrypted aswell
     			//create vault
     			vault = JSON.stringify({});
     			//encrypt vault and turn into string
@@ -89,6 +103,21 @@
 		    	}
 		    }
 		}
+		function add_to_db(url, username, password, name=null){
+			if (name == null)
+				name = url;
+			info = [url, username, password]
+			vault[name] = info
+			console.log(vault)
+			encrypt_and_send_vault()
+		}
+
+		function remove_from_db(name){
+			delete vault[name]
+			encrypt_and_send_vault()
+		}
+
+
 
 		/*
 		turn data into vault: 		vault = JSON.stringify({})

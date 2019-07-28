@@ -8,6 +8,7 @@ from base64 import b64encode
 import re
 # Create your views here.
 def homepage(request):
+	
 	print(request.COOKIES)
 	csrfToken = request.COOKIES['csrftoken']
 
@@ -17,12 +18,12 @@ def homepage(request):
 		print("*"*50)
 		email = request.POST["Email"]
 		password = request.POST["Password"]
-		new = request.POST["new"]
-		if new == "true":
+		request_type = request.POST["type"]	#wether the user registers("new"), logs in("existing") or modifies their vault("change")
+		if request_type == "new" or request.POST["type"] == "change":
 			data = request.POST["Vault"]
 			print(data)
 		print(email)
-		print(request.POST["new"])
+		print(request.POST["type"])
 		print(password)
 		
 		#check if email format is valid
@@ -38,9 +39,15 @@ def homepage(request):
 			# check if user already exists
 			print(len(User.objects.filter(mail=email)))
 			if len(User.objects.filter(mail=email)) != 0:
-				if new == "true":
+				if request_type == "new":
 					print("User already exists.")
 					response.write("User already exists.")
+				elif request.POST["type"] == "change":
+					print("Updating Vault")
+					modifiedUser = User.objects.get(mail=email)
+					modifiedUser.data = data
+					modifiedUser.save()
+					response.write("Vault updated!")
 				else:
 					print("Username right, testing login")
 					storedPassword = User.objects.filter(mail=email)[0].password
@@ -52,7 +59,7 @@ def homepage(request):
 						response.write("Password wrong!")
 
 			else:
-				if new == "true":
+				if request_type == "new":
 					print("creating new user")
 					newUser = User(mail=email, password=password, data=data)
 					newUser.save()
