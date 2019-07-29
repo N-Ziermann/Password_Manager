@@ -29,8 +29,17 @@
 	
 	<b><h3 id="errorMessage" style="color: red;"></h3></b>
 
+</body>
+<script type="text/javascript">
+		function display_vault(){
+			var body =  document.getElementsByTagName("BODY")[0];
+			body.innerHTML = "";
+			for (var site in vault){
+				body.innerHTML += "<div><div><b>" + site + "</b></div><div>" + vault[site][0] + "</div><div>" + vault[site][1] + "</div><div>" + vault[site][2] + "</div></div>";
+			}
+		}
 
-	<script type="text/javascript">
+
 		function encrypt_and_send_vault(){
 			const request = new XMLHttpRequest();
 			request.open('POST', '/');
@@ -98,11 +107,11 @@
 		    		//turn vault back into object
 		    		vault_text = CryptoJS.AES.decrypt(encrypted_vault, vaultKey).toString(CryptoJS.enc.Utf8);
 		    		vault = JSON.parse(vault_text)
-
-		    		document.getElementById("errorMessage").innerHTML = vault_text;
+		    		display_vault()
 		    	}
 		    }
 		}
+
 		function add_to_db(url, username, password, name=null){
 			if (name == null)
 				name = url;
@@ -110,11 +119,13 @@
 			vault[name] = info
 			console.log(vault)
 			encrypt_and_send_vault()
+			display_vault()
 		}
 
 		function remove_from_db(name){
 			delete vault[name]
 			encrypt_and_send_vault()
+			display_vault()
 		}
 
 
@@ -134,5 +145,4 @@
 		*/
 		
 	</script>
-</body>
 </html>
