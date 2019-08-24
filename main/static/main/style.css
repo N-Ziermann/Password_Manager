@@ -1,0 +1,24 @@
+@media (min-width: 1600px) {
+    .container{
+	    max-width: 90%;
+	}
+}
+
+[class*=prim]{
+    background-color: #80b3ff;
+    padding: 15px;
+}
+
+[class*=sec]{
+    background-color: #80b3e1;
+    padding: 15px;
+}
+
+
+[class*=row]{
+    margin:10px 0 10px 0;
+    border:solid;
+    border-color: black;
+}
+
+
