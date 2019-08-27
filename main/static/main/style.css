@@ -21,4 +21,13 @@
     border-color: black;
 }
 
+.loginForm{
+	display: inline-block; background-color: #80b3ff;; padding: 20px;
+}
+
+input label::before {
+  content: "\A";
+  white-space: pre;
+}
+
 

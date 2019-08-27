@@ -12,23 +12,29 @@
 
 </head>
 <body>
-	<h1>Password Manager</h1>
-
-	<h2>Register:</h2>
-	<form method="POST" id="register">
-		{% csrf_token %}
-		{{ user_create }}
-		<input type="button" onclick="p('new');" value="post">
-	</form>
-
-	<h2>Login:</h2>
-	<form method="POST" id="login">
-		{% csrf_token %}
-		{{ user_create }}
-		<input type="button" onclick="p('existing');" value="post">
-	</form>
-	
-	<b><h3 id="errorMessage" style="color: red;"></h3></b>
+	<center>
+		<div class="loginForm">
+			<h1><b>Password Manager<b></h1>
+			<br>
+			<h2>Register:</h2>
+			<br>
+			<form method="POST" id="register">
+				{% csrf_token %}
+				{{ user_create }}
+				<input type="button" onclick="p('new');" value="post">
+			</form>
+			<br>
+			<h2>Login:</h2>
+			<br>
+			<form method="POST" id="login">
+				{% csrf_token %}
+				{{ user_create }}
+				<input type="button" onclick="p('existing');" value="post">
+			</form>
+			
+			<b><h3 id="errorMessage" style="color: red;"></h3></b>
+		</div>
+	</center>
 
 </body>
 <script type="text/javascript">
