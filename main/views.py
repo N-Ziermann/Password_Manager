@@ -31,7 +31,7 @@ def homepage(request):
 			print("Email is valid")
 			
 			# hashing the password again
-			hashedPasswordBytes = PBKDF2("password", bytes(email, 'utf-8'), dkLen=64, count=100000, prf=prf)
+			hashedPasswordBytes = PBKDF2(password, bytes(email, 'utf-8'), dkLen=64, count=100000, prf=prf)
 			print(hashedPasswordBytes)
 			# turn hashed password into string to store in db
 			hashedPassword = b64encode(hashedPasswordBytes).decode('utf-8')
@@ -51,7 +51,7 @@ def homepage(request):
 				else:
 					print("Username right, testing login")
 					storedPassword = User.objects.filter(mail=email)[0].password
-					if storedPassword == password:
+					if storedPassword == hashedPassword:
 						print("Password right, loging in")
 						response.write("Vault:" + User.objects.filter(mail=email)[0].data)
 					else:
@@ -61,7 +61,7 @@ def homepage(request):
 			else:
 				if request_type == "new":
 					print("creating new user")
-					newUser = User(mail=email, password=password, data=data)
+					newUser = User(mail=email, password=hashedPassword, data=data)
 					newUser.save()
 					response.write("User created!")
 				else:
