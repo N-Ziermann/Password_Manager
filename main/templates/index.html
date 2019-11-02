@@ -9,45 +9,158 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="{% static '/main/style.css' %}">
 
-
 </head>
+
+<style type="text/css">
+	#header div{
+		border: solid;
+	}
+	#header div div{
+		border: none;
+	}
+	#header div label{
+		margin-left: 5px; 
+		margin-right: 5px;
+	}
+	#header div b{
+		margin-left: 5px;
+	}
+	#header input{
+		width: 100%;
+	}
+
+</style>
+
+
 <body>
-	<center>
-		<div class="loginForm">
-			<h1><b>Password Manager<b></h1>
-			<br>
-			<h2>Register:</h2>
-			<br>
-			<form method="POST" id="register">
-				{% csrf_token %}
-				{{ user_create }}
-				<input type="button" onclick="p('new');" value="post">
-			</form>
-			<br>
-			<h2>Login:</h2>
-			<br>
-			<form method="POST" id="login">
-				{% csrf_token %}
-				{{ user_create }}
-				<input type="button" onclick="p('existing');" value="post">
-			</form>
+	<div class="container" style="background-color: yellow; width: 80%; padding: 20px 20px 20px 20px;">
+		<div id="header">
+			<center><h1><b>Password Manager<b></h1></b></b></h1></center>
 			
-			<b><h3 id="errorMessage" style="color: red;"></h3></b>
+			<div id="settings" style="visibility: hidden; height: 0px;">
+				<div class='row'>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<b>Add </b>
+					</div>
+
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<input name="title" placeholder="Title(optional)">
+					</div>
+
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<input name="url" placeholder="Url">
+					</div>
+
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<input name="name" placeholder="Username">
+					</div>
+
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<input name="pass" placeholder="Password">
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<button onclick="add_to_db(this.parentNode.parentNode.children[2].children[0].value,this.parentNode.parentNode.children[3].children[0].value,this.parentNode.parentNode.children[4].children[0].value,this.parentNode.parentNode.children[1].children[0].value); clearInput(this.parentNode.parentNode)">Apply</button>
+					</div>
+
+				</div>
+				<div class='row'>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<b>Remove </b>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<input name="title" placeholder="Title">
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+						<button onclick="remove_from_db(this.parentNode.parentNode.children[1].children[0].value);clearInput(this.parentNode.parentNode)">Apply</button>
+					</div>
+				</div>
+			</div>
 		</div>
-	</center>
+		<div class="contents">
+			<div>
+				
+				<div style="background-color: green; padding:10px; border: solid;"> 
+					<h2>Register:</h2>
+					<form id="register">
+						{% csrf_token %}	
+						<div class="row" name="Email" style="border:none;">
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3" >Email:</label>
+							<input type="Email" name="content">
+						</div>
+						<div class="row" name="Password" style="border:none;">
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
+							<input type="Password" name="content">
+						</div>
+						<input type="button" onclick="p('new');" value="post">
+					</form>
+				</div>
+				<br>
+					<div style="background-color: orange; padding:10px; border: solid;"> 
+					<h2>Login:</h2>
+					<form id="login">
+						{% csrf_token %}
+						<div class="row" name="Email" style="border:none;">
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Email:</label>
+							<input type="Email" name="content">
+						</div>
+						<div class="row" name="Password" style="border:none;">
+							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
+							<input type="Password" name="content">
+						</div>
+						<h5 style="margin-top: 15px;">Examplecredentials: Email = example@user.com  Password = 1234</h5>
+						<input type="button" onclick="p('existing');" value="post" style="margin: 5px 0 10px 0;">
+						
+					</form>
+				</div>
+				<br>
+				
+				<br>
+				<b><h3 id="errorMessage" style="color: red;"></h3></b>
+			</div>
+		</div>
+	</div>
 
 </body>
+
 <script type="text/javascript">
+
+		function clearInput(obj){
+			for (i = 0; i<obj.children.length;i++){
+				obj.children[i].children[0].value = ""
+			}
+		}
+
+		function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getCookie('csrftoken');
+
+
+
 		function display_vault(){
 			//clear page
-			var body =  document.getElementsByTagName("BODY")[0];
-			body.innerHTML = "";
-			var container =  document.createElement("div");
-			container.classList.add('container');
-			body.appendChild(container);
+			var contents = document.getElementsByClassName("contents")[0];
+			contents.innerHTML = "";
+			//change header
+			document.getElementById("settings").style = "";
+
+
+
 			//append every saved website to page 
 			for (var site in vault){
-				container.innerHTML += "<div class=\"row\"><div class=\"col-lg-3 prim\"><b>" + site + "</b></div><div class=\"col-lg-3 sec\">" + vault[site][0] + "</div><div class=\"col-lg-3 prim\">" + vault[site][1] + "</div><div class=\"col-lg-3 sec\">" + vault[site][2] + "</div></div>";
+				contents.innerHTML += "<div class=\"row\"><div class=\"col-lg-3 prim\"><b>" + site + "</b></div><div class=\"col-lg-3 sec\">" + vault[site][0] + "</div><div class=\"col-lg-3 prim\">" + vault[site][1] + "</div><div class=\"col-lg-3 sec\">" + vault[site][2] + "</div></div>";
 			}
 		}
 
@@ -55,7 +168,7 @@
 		function encrypt_and_send_vault(){
 			const request = new XMLHttpRequest();
 			request.open('POST', '/');
-			request.setRequestHeader("X-CSRFToken", "{{csrfToken}}");
+			request.setRequestHeader("X-CSRFToken", csrftoken);
 			const data = new FormData();
 		    data.append('type', "change")
     		data.append('Email', mail);
@@ -81,11 +194,11 @@
 		    
 		    // Include csrf token in header so Django will accept the request
 
-		    request.setRequestHeader("X-CSRFToken", "{{csrfToken}}");
+		    request.setRequestHeader("X-CSRFToken", csrftoken);
 		    
 		    //get data from form
-		    mail = form.children.Email.value;
-		    password = form.children.Password.value;
+		    mail = form.children.Email.children.content.value;
+		    password = form.children.Password.children.content.value;
 		   
 		    //hash (dbKey = Login; vaultKey = en-/decrypt vault)
 		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString();
@@ -124,9 +237,12 @@
 		    }
 		}
 
-		function add_to_db(url, username, password, name=null){
-			if (name == null)
+		function add_to_db(url, username, password, name){
+			if (name == undefined || name == ""){
+				console.log(url)
 				name = url;
+			}
+			console.log(name)
 			info = [url, username, password]
 			vault[name] = info
 			console.log(vault)
@@ -140,7 +256,10 @@
 			display_vault()
 		}
 
+		//EXAMPLECREDENTIALS
 
+		// example@user.com 
+		// 1234
 
 		/*
 		turn data into vault: 		vault = JSON.stringify({})

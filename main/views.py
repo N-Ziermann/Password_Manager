@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from main.forms import UserCreateForm
 from main.models import User
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Hash import SHA512, HMAC
@@ -9,9 +8,6 @@ import re
 # Create your views here.
 def homepage(request):
 	
-	print(request.COOKIES)
-	csrfToken = request.COOKIES['csrftoken']
-
 	if request.method == "POST":
 		response = HttpResponse()	#data that will be send back to the client
 
@@ -76,8 +72,7 @@ def homepage(request):
 		print("*"*50)
 		
 	return render(	request=request,
-					template_name="index.html",
-					context={"user_create":UserCreateForm, "csrfToken":csrfToken})
+					template_name="index.html")
 
 def prf(p,s):
 	return HMAC.new(p,s,SHA512).digest()
