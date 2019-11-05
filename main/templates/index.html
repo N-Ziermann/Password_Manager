@@ -4,6 +4,7 @@
 	<title>Password Manager</title>
 
 	{% load static %}
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<script src="{% static '/main/pbkdf2.js' %}"></script>	
 	<script src="{% static '/main/aes.js' %}"></script>	
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -11,33 +12,12 @@
 
 </head>
 
-<style type="text/css">
-	#header div{
-		border: solid;
-	}
-	#header div div{
-		border: none;
-	}
-	#header div label{
-		margin-left: 5px; 
-		margin-right: 5px;
-	}
-	#header div b{
-		margin-left: 5px;
-	}
-	#header input{
-		width: 100%;
-	}
-
-</style>
-
-
 <body>
-	<div class="container" style="background-color: yellow; width: 80%; padding: 20px 20px 20px 20px;">
+	<div class="container">
 		<div id="header">
 			<center><h1><b>Password Manager<b></h1></b></b></h1></center>
 			
-			<div id="settings" style="visibility: hidden; height: 0px;">
+			<div id="settings" style="visibility: hidden; height: 0px;"> <!-- only visible as soon as the user logs in-->
 				<div class='row'>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 						<b>Add </b>
@@ -79,15 +59,15 @@
 		<div class="contents">
 			<div>
 				
-				<div style="background-color: green; padding:10px; border: solid;"> 
+				<div class="accountDetails"> 
 					<h2>Register:</h2>
 					<form id="register">
 						{% csrf_token %}	
-						<div class="row" name="Email" style="border:none;">
+						<div class="row" name="Email">
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3" >Email:</label>
 							<input type="Email" name="content">
 						</div>
-						<div class="row" name="Password" style="border:none;">
+						<div class="row" name="Password">
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
 							<input type="Password" name="content">
 						</div>
@@ -95,20 +75,20 @@
 					</form>
 				</div>
 				<br>
-					<div style="background-color: orange; padding:10px; border: solid;"> 
+				<div class="accountDetails"> 
 					<h2>Login:</h2>
 					<form id="login">
 						{% csrf_token %}
-						<div class="row" name="Email" style="border:none;">
+						<div class="row" name="Email">
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Email:</label>
 							<input type="Email" name="content">
 						</div>
-						<div class="row" name="Password" style="border:none;">
+						<div class="row" name="Password">
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
 							<input type="Password" name="content">
 						</div>
-						<h5 style="margin-top: 15px;">Examplecredentials: Email = example@user.com  Password = 1234</h5>
-						<input type="button" onclick="p('existing');" value="post" style="margin: 5px 0 10px 0;">
+						<h5>Examplecredentials: Email = example@user.com  Password = 1234</h5>
+						<input type="button" onclick="p('existing');" value="post">
 						
 					</form>
 				</div>
@@ -124,11 +104,16 @@
 
 <script type="text/javascript">
 
+
+		var csrftoken = getCookie('csrftoken');
+
+
 		function clearInput(obj){
 			for (i = 0; i<obj.children.length;i++){
 				obj.children[i].children[0].value = ""
 			}
 		}
+
 
 		function getCookie(name) {
 		    var cookieValue = null;
@@ -145,22 +130,39 @@
 		    }
 		    return cookieValue;
 		}
-		var csrftoken = getCookie('csrftoken');
-
 
 
 		function display_vault(){
 			//clear page
 			var contents = document.getElementsByClassName("contents")[0];
 			contents.innerHTML = "";
+			
 			//change header
-			document.getElementById("settings").style = "";
-
-
+			document.getElementById("settings").style = "background-color: #336600;";
 
 			//append every saved website to page 
-			for (var site in vault){
-				contents.innerHTML += "<div class=\"row\"><div class=\"col-lg-3 prim\"><b>" + site + "</b></div><div class=\"col-lg-3 sec\">" + vault[site][0] + "</div><div class=\"col-lg-3 prim\">" + vault[site][1] + "</div><div class=\"col-lg-3 sec\">" + vault[site][2] + "</div></div>";
+			for (var site in vault){	// setup a seperate field for each registered password (done through createElement to avoid xss)
+				
+				var outerCon = document.createElement("div"); // contains all the info about each entry
+				outerCon.className = "row site";
+				
+				var nameCon = document.createElement("div"); // contains Title
+				var nameBold = document.createElement("b");	// makes title stick out
+				nameBold.innerText = site;
+				nameCon.appendChild(nameBold)
+				nameCon.className = "col-lg-3 col-md-3 col-sm-3 col-xs-3 prim"	// determines width and color
+				outerCon.appendChild(nameCon)
+				
+				for (i=0;i<3;i++){ //append other 3 points of info
+					var div = document.createElement("div");
+					div.innerText = vault[site][i]
+					if (i%2 == 0)
+						div.className = "col-lg-3 col-md-3 col-sm-3 col-xs-3 sec"	//colors change every other block to improve readablity
+					else
+						div.className = "col-lg-3 col-md-3 col-sm-3 col-xs-3 prim"
+					outerCon.append(div)
+				}
+				contents.append(outerCon) // put everything on the page
 			}
 		}
 
@@ -179,6 +181,7 @@
     		request.send( data );
 		}
 
+
 		function p(type){
 			//select form from which data will be read
 			if (type == "new"){
@@ -193,7 +196,6 @@
 		    request.open('POST', '/');
 		    
 		    // Include csrf token in header so Django will accept the request
-
 		    request.setRequestHeader("X-CSRFToken", csrftoken);
 		    
 		    //get data from form
@@ -201,8 +203,8 @@
 		    password = form.children.Password.children.content.value;
 		   
 		    //hash (dbKey = Login; vaultKey = en-/decrypt vault)
-		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 2500}).toString();
-		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 2500}).toString();
+		    vaultKey = CryptoJS.PBKDF2(password,mail,{keySize: 256 / 32, iterations: 500}).toString();
+		    dbKey = CryptoJS.PBKDF2(vaultKey,password,{keySize: 256 / 32, iterations: 500}).toString();
     		
     		//save data from form
 		    const data = new FormData();
@@ -223,9 +225,15 @@
 
 		    request.onreadystatechange=(e)=>{
 		    	r = request.responseText;
-		    	console.log(r);
 		    	if (r.substring(0, 6) != "Vault:"){
-		    		document.getElementById("errorMessage").innerHTML = r;
+		    		if (r == "User created!"){	// if registration successfull: log user in | else: display error
+		    			vault = {}
+		    			display_vault()
+		    		}
+		    		else{
+		    			document.getElementById("errorMessage").innerText = r;
+		    		}
+
 		    	}
 		    	else{	//if user logged in successfully and got his vault sent back
 		    		encrypted_vault = r.substring(6, r.length)
@@ -237,43 +245,24 @@
 		    }
 		}
 
+
 		function add_to_db(url, username, password, name){
 			if (name == undefined || name == ""){
-				console.log(url)
 				name = url;
 			}
-			console.log(name)
 			info = [url, username, password]
 			vault[name] = info
-			console.log(vault)
 			encrypt_and_send_vault()
 			display_vault()
 		}
 
+
 		function remove_from_db(name){
+
 			delete vault[name]
 			encrypt_and_send_vault()
 			display_vault()
 		}
-
-		//EXAMPLECREDENTIALS
-
-		// example@user.com 
-		// 1234
-
-		/*
-		turn data into vault: 		vault = JSON.stringify({})
-
-		encrypt vault: 				vault = CryptoJS.AES.encrypt(vault, vaultKey)
-
-		turn into string: 			vault = vault.toString()
-
-		decrypt vault: 				vault = CryptoJS.AES.decrypt(vault,vaultKey)
-
-		turn into parsable string: 	vault = vault.toString(CryptoJS.enc.Utf8)
-
-		turn into data: 			vault = JSON.parse(vault)
-		*/
-		
+	
 	</script>
 </html>

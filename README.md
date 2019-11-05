@@ -12,19 +12,19 @@ This password_manager is a project I used for learning django as well as how to 
 
 To guarantee the secure transmission of login details multiple layers of hashing are used.
 
-1. 2500 iterations of PBKDF2-SHA256 **on the password** with the users email used as a salt 
+1. 500 iterations of PBKDF2-SHA256 **on the password** with the users email used as a salt 
 
    (**client-side** JavaScript)
 
    The resulting hash will later be used as a key to en-/decrypt the users password-vault.
 
-2. 2500 iterations of PBKDF2-SHA256 **on the key** with the users email used as a salt 
+2. 500 iterations of PBKDF2-SHA256 **on the key** with the users email used as a salt 
 
    (**client-side** JavaScript)
 
    This hash can then be send to the server
 
-3. xxx iterations of PBKDF2-SHA256 **on the hash** with the users email used as a salt 
+3. 100000 iterations of PBKDF2-SHA256 **on the hash** with the users email used as a salt 
 
    (**server-side** Python)
 

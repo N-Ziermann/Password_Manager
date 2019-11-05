@@ -1,33 +1,63 @@
 @media (min-width: 1600px) {
     .container{
-	    max-width: 90%;
+	    max-width: 50%;
 	}
 }
 
+body{
+    background-color: #555555;
+}
+
+h5{
+    margin-top: 15px;
+}
+
+.accountDetails{
+    background-color: #336600;
+    padding:10px; 
+    border: solid;
+}
+
+.container{
+    background-color: #777777;
+    padding: 20px 20px 20px 20px;
+    border: solid;
+    margin-top: 2%; 
+}
+
+[class*=site]{
+    border: solid;
+    word-wrap: break-word;
+}
+
 [class*=prim]{
-    background-color: #80b3ff;
+    background-color: #336900;
     padding: 15px;
 }
 
 [class*=sec]{
-    background-color: #80b3e1;
+    background-color: #336600;
     padding: 15px;
 }
 
 
 [class*=row]{
     margin:10px 0 10px 0;
-    border:solid;
-    border-color: black;
 }
 
-.loginForm{
-	display: inline-block; background-color: #80b3ff;; padding: 20px;
+#header div{
+    border: solid;
 }
-
-input label::before {
-  content: "\A";
-  white-space: pre;
+#header div div{
+    border: none;
 }
-
-
+#header div label{
+    margin-left: 5px; 
+    margin-right: 5px;
+}
+#header div b{
+    margin-left: 5px;
+}
+#header input{
+    width: 100%;
+}
