@@ -24,7 +24,7 @@
 					</div>
 
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-						<input name="title" placeholder="Title(optional)">
+						<input name="title" placeholder="Title">
 					</div>
 
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
@@ -39,7 +39,7 @@
 						<input name="pass" placeholder="Password">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-						<button onclick="add_to_db(this.parentNode.parentNode.children[2].children[0].value,this.parentNode.parentNode.children[3].children[0].value,this.parentNode.parentNode.children[4].children[0].value,this.parentNode.parentNode.children[1].children[0].value); clearInput(this.parentNode.parentNode)">Apply</button>
+						<input type="button" value="Apply" onclick="add_to_db(this.parentNode.parentNode.children[2].children[0].value,this.parentNode.parentNode.children[3].children[0].value,this.parentNode.parentNode.children[4].children[0].value,this.parentNode.parentNode.children[1].children[0].value); clearInput(this.parentNode.parentNode)">
 					</div>
 
 				</div>
@@ -51,7 +51,7 @@
 						<input name="title" placeholder="Title">
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-						<button onclick="remove_from_db(this.parentNode.parentNode.children[1].children[0].value);clearInput(this.parentNode.parentNode)">Apply</button>
+						<input type="button" value="Apply" onclick="remove_from_db(this.parentNode.parentNode.children[1].children[0].value);clearInput(this.parentNode.parentNode)">
 					</div>
 				</div>
 			</div>
@@ -71,7 +71,7 @@
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
 							<input type="Password" name="content">
 						</div>
-						<input type="button" onclick="p('new');" value="post">
+						<input type="button" onclick="p('new');" value="SEND">
 					</form>
 				</div>
 				<br>
@@ -87,17 +87,16 @@
 							<label class="col-lg-3 col-md-3 col-sm-3 col-xs-3">Password:</label>
 							<input type="Password" name="content">
 						</div>
-						<h5>Examplecredentials: Email = example@user.com  Password = 1234</h5>
-						<input type="button" onclick="p('existing');" value="post">
+						<input type="button" onclick="p('existing');" value="SEND">
+						<h5>Examplecredentials:<br>Email = example@user.com<br>Password = 1234</h5>
 						
 					</form>
 				</div>
 				<br>
-				
-				<br>
 				<b><h3 id="errorMessage" style="color: red;"></h3></b>
 			</div>
 		</div>
+		<p>Niklas Ziermann - Copyright © 2019 - <a target="_blank" rel="noopener noreferrer" href="https://n-ziermann.github.io/contact.html" style="text-decoration: none; color: white;"><b>Impressum</b></a> - <a target="_blank" rel="noopener noreferrer" href="https://n-ziermann.github.io/" style="text-decoration: none; color: white;"><b>Portfolio</b></a></p>
 	</div>
 
 </body>
@@ -109,7 +108,7 @@
 
 
 		function clearInput(obj){
-			for (i = 0; i<obj.children.length;i++){
+			for (i = 0; i<obj.children.length - 1;i++){ // -1 so the button doesnt get cleared
 				obj.children[i].children[0].value = ""
 			}
 		}
@@ -138,7 +137,7 @@
 			contents.innerHTML = "";
 			
 			//change header
-			document.getElementById("settings").style = "background-color: #336600;";
+			document.getElementById("settings").style = "background-color: var(--secondary-color);box-shadow: 4px 6px var(--shadow-color); margin-bottom:10px;";
 
 			//append every saved website to page 
 			for (var site in vault){	// setup a seperate field for each registered password (done through createElement to avoid xss)

@@ -1,3 +1,10 @@
+:root {
+ --primary-color:#191f28;
+ --secondary-color:#212935;
+ --tertiary-color:#2d3949;
+ --shadow-color:rgba(0, 0, 0, 0.5);
+}
+
 @media (min-width: 1600px) {
     .container{
 	    max-width: 50%;
@@ -5,39 +12,55 @@
 }
 
 body{
-    background-color: #555555;
+    background-color: var(--primary-color);
+    font-size: 20px; 
+    color: white;
+}
+
+h1{
+    margin-bottom: 15px; 
 }
 
 h5{
     margin-top: 15px;
+    font-size: 18px;
 }
 
 .accountDetails{
-    background-color: #336600;
+    background-color: var(--secondary-color);
     padding:10px; 
     border: solid;
+    border-radius: 10px;
+    box-shadow: 4px 6px var(--shadow-color);
 }
 
 .container{
-    background-color: #777777;
+    background-color: var(--tertiary-color);
     padding: 20px 20px 20px 20px;
     border: solid;
     margin-top: 2%; 
+    border-radius: 10px;
+    box-shadow: 6px 8px var(--shadow-color);
 }
 
 [class*=site]{
+    background-color: var(--primary-color);
     border: solid;
     word-wrap: break-word;
+    border-radius: 10px;
+    box-shadow: 4px 6px var(--shadow-color);
 }
 
 [class*=prim]{
-    background-color: #336900;
+    background-color: var(--primary-color);
     padding: 15px;
+    border-radius: 10px;
 }
 
 [class*=sec]{
-    background-color: #336600;
+    background-color: var(--secondary-color);
     padding: 15px;
+    border-radius: 10px;
 }
 
 
@@ -47,17 +70,36 @@ h5{
 
 #header div{
     border: solid;
+    border-radius: 10px;
 }
+
 #header div div{
     border: none;
+    padding: 0 7px 0 7px;
 }
-#header div label{
+
+label{
     margin-left: 5px; 
     margin-right: 5px;
+    margin-bottom: 0;
+    font-size: 22px; 
 }
+
 #header div b{
     margin-left: 5px;
 }
+
+input{
+    border-radius: 5px;
+}
+
+input[type=button]{
+    background-color: var(--secondary-color);
+    border-color: #777777;
+    color: white;
+}
+
 #header input{
     width: 100%;
+    font-size: 20px; 
 }
